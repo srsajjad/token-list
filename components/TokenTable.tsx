@@ -6,6 +6,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { SortingState } from "@tanstack/react-table";
 import {
   DndContext,
   closestCenter,
@@ -56,6 +57,7 @@ const columnHelper = createColumnHelper<any>();
 
 const defaultColumns = [
   columnHelper.accessor("image", {
+    id: "image", // Add explicit IDs to columns
     header: "Coin",
     cell: (info) => (
       <div className="flex items-center">
@@ -146,40 +148,55 @@ function DraggableColumnHeader({ header }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    cursor: "pointer",
   };
 
   return (
-    <TableHead ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {header.isPlaceholder
-        ? null
-        : flexRender(header.column.columnDef.header, header.getContext())}
+    <TableHead
+      ref={setNodeRef}
+      style={style}
+      onClick={header.column.getToggleSortingHandler()}
+    >
+      <div className="flex items-center justify-between">
+        <div {...attributes} {...listeners}>
+          {flexRender(header.column.columnDef.header, header.getContext())}
+        </div>
+        <div>
+          {{
+            asc: " ↑",
+            desc: " ↓",
+          }[header.column.getIsSorted() as string] ?? null}
+        </div>
+      </div>
     </TableHead>
   );
 }
 
 export default function TokenTable({ tokens, view }) {
-  const columns = useMemo(() => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columns, setColumns] = useState(() => {
     if (view === "Trending") {
       return defaultColumns;
     }
     const savedView = localStorage.getItem(`view_${view}`);
-
     if (savedView) {
       const savedColumns = JSON.parse(savedView);
-
       return savedColumns.map((columnId) =>
         defaultColumns.find((col) => col.id === columnId)
       );
     }
     return defaultColumns;
-  }, [view]);
+  });
 
-  console.log("columns", columns);
+  const [data] = useState(tokens);
 
-  const [data, setData] = useState(tokens);
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -194,18 +211,25 @@ export default function TokenTable({ tokens, view }) {
   function handleDragEnd(event) {
     const { active, over } = event;
 
-    if (active.id !== over.id) {
-      setData((items) => {
-        const oldIndex = table
-          .getAllColumns()
-          .findIndex((col) => col.id === active.id);
-        const newIndex = table
-          .getAllColumns()
-          .findIndex((col) => col.id === over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
+    // Add null check for over
+    if (!over || active.id === over.id) {
+      return;
     }
+
+    setColumns((prevColumns) => {
+      const oldIndex = prevColumns.findIndex(
+        (col) => col.id === active.id || col.accessorKey === active.id
+      );
+      const newIndex = prevColumns.findIndex(
+        (col) => col.id === over.id || col.accessorKey === over.id
+      );
+
+      if (oldIndex === -1 || newIndex === -1) {
+        return prevColumns;
+      }
+
+      return arrayMove(prevColumns, oldIndex, newIndex);
+    });
   }
 
   return (
