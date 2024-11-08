@@ -5,8 +5,9 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
+  SortingState,
+  sortingFns,
 } from "@tanstack/react-table";
-import { SortingState } from "@tanstack/react-table";
 import {
   DndContext,
   closestCenter,
@@ -57,8 +58,9 @@ const columnHelper = createColumnHelper<any>();
 
 const defaultColumns = [
   columnHelper.accessor("image", {
-    id: "image", // Add explicit IDs to columns
+    id: "image",
     header: "Coin",
+    enableSorting: false, // Disable sorting for image column
     cell: (info) => (
       <div className="flex items-center">
         <img
@@ -71,11 +73,17 @@ const defaultColumns = [
     ),
   }),
   columnHelper.accessor("current_price", {
+    id: "current_price",
     header: "Price",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => `$${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("price_change_percentage_1h_in_currency", {
+    id: "price_change_1h",
     header: "1h",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => {
       const value = info.getValue();
       return value ? `${value.toFixed(2)}%` : "N/A";
@@ -83,6 +91,8 @@ const defaultColumns = [
   }),
   columnHelper.accessor("price_change_percentage_24h_in_currency", {
     header: "24h",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => {
       const value = info.getValue();
       return value ? `${value.toFixed(2)}%` : "N/A";
@@ -90,6 +100,8 @@ const defaultColumns = [
   }),
   columnHelper.accessor("price_change_percentage_7d_in_currency", {
     header: "7d",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => {
       const value = info.getValue();
       return value ? `${value.toFixed(2)}%` : "N/A";
@@ -97,14 +109,19 @@ const defaultColumns = [
   }),
   columnHelper.accessor("total_volume", {
     header: "24h Volume",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => `$${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("market_cap", {
     header: "Market Cap",
+    enableSorting: true,
+    sortingFn: "alphanumeric",
     cell: (info) => `$${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("sparkline_in_7d.price", {
     header: "Last 7 Days",
+    enableSorting: true,
     cell: (info) => (
       <div className="w-32 h-16">
         <Line
@@ -143,7 +160,9 @@ const defaultColumns = [
 
 function DraggableColumnHeader({ header }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: header.id });
+    useSortable({
+      id: header.id,
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -152,20 +171,28 @@ function DraggableColumnHeader({ header }) {
   };
 
   return (
-    <TableHead
-      ref={setNodeRef}
-      style={style}
-      onClick={header.column.getToggleSortingHandler()}
-    >
-      <div className="flex items-center justify-between">
+    <TableHead ref={setNodeRef} style={style}>
+      <div className="flex items-center gap-2">
+        {/* Remove drag handlers from outer div */}
+        {header.column.getCanSort() && (
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              header.column.toggleSorting();
+            }}
+            className="text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            {
+              {
+                asc: "↑",
+                desc: "↓",
+                false: "↕",
+              }[(header.column.getIsSorted() as string) ?? false]
+            }
+          </span>
+        )}
         <div {...attributes} {...listeners}>
           {flexRender(header.column.columnDef.header, header.getContext())}
-        </div>
-        <div>
-          {{
-            asc: " ↑",
-            desc: " ↓",
-          }[header.column.getIsSorted() as string] ?? null}
         </div>
       </div>
     </TableHead>
@@ -199,6 +226,17 @@ export default function TokenTable({ tokens, view }) {
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
+    enableMultiSort: false, // Change to false to make sorting behavior more clear
+    sortingFns: {
+      alphanumeric: (rowA, rowB, columnId) => {
+        const a =
+          parseFloat(rowA.getValue(columnId)) || rowA.getValue(columnId);
+        const b =
+          parseFloat(rowB.getValue(columnId)) || rowB.getValue(columnId);
+        return a < b ? -1 : a > b ? 1 : 0;
+      },
+    },
   });
 
   const sensors = useSensors(
