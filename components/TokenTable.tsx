@@ -74,15 +74,24 @@ const defaultColumns = [
   }),
   columnHelper.accessor("price_change_percentage_1h_in_currency", {
     header: "1h",
-    cell: (info) => `${info.getValue()}%`,
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? `${value.toFixed(2)}%` : "N/A";
+    },
   }),
-  columnHelper.accessor("price_change_percentage_24h", {
+  columnHelper.accessor("price_change_percentage_24h_in_currency", {
     header: "24h",
-    cell: (info) => `${info.getValue()}%`,
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? `${value.toFixed(2)}%` : "N/A";
+    },
   }),
   columnHelper.accessor("price_change_percentage_7d_in_currency", {
     header: "7d",
-    cell: (info) => `${info.getValue()}%`,
+    cell: (info) => {
+      const value = info.getValue();
+      return value ? `${value.toFixed(2)}%` : "N/A";
+    },
   }),
   columnHelper.accessor("total_volume", {
     header: "24h Volume",
