@@ -54,8 +54,8 @@ export default function HighlightsSection() {
 
       <Card className="p-4">
         <CardContent className="p-0">
-          <div className="flex justify-between items-center gap-4">
-            <div className="space-y-1.5">
+          <div className="flex flex-wrap justify-between items-start gap-4">
+            <div className="space-y-1.5 min-w-[140px]">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 Market Cap
               </h3>
@@ -73,7 +73,7 @@ export default function HighlightsSection() {
                 <span>{Math.abs(marketCapChange).toFixed(2)}%</span>
               </div>
             </div>
-            <div className="w-28 h-12 shrink-0">
+            <div className="w-28 h-12">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
@@ -97,8 +97,8 @@ export default function HighlightsSection() {
 
       <Card className="p-4">
         <CardContent className="p-0">
-          <div className="flex justify-between items-center gap-4">
-            <div className="space-y-1.5">
+          <div className="flex flex-wrap justify-between items-start gap-4">
+            <div className="space-y-1.5 min-w-[140px]">
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
                 24h Volume
               </h3>
@@ -106,7 +106,7 @@ export default function HighlightsSection() {
                 ${data.total_volume.usd.toLocaleString()}
               </p>
             </div>
-            <div className="w-28 h-12 shrink-0">
+            <div className="w-28 h-12">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
