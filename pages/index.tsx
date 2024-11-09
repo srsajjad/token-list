@@ -49,7 +49,7 @@ export default function Home() {
     );
 
   return (
-    <div className="container mx-auto p-4 bg-gray-900 min-h-screen text-gray-100">
+    <div className="container mx-auto p-4 bg-gray-900/50 min-h-screen text-gray-100">
       <h1 className="text-2xl font-bold mb-4 text-white">Crypto Dashboard</h1>
       <HighlightsSection />
       <Tabs
