@@ -56,7 +56,7 @@ export default function CustomizeViewModal({ isOpen, onClose, onSave }) {
               value={viewName}
               onChange={(e) => setViewName(e.target.value)}
               placeholder="Enter view name"
-              className="col-span-3"
+              className="col-span-3 bg-gray-800 border-gray-700 text-gray-100 placeholder:text-gray-400"
             />
           </div>
           {availableColumns.map((column) => (
@@ -65,10 +65,11 @@ export default function CustomizeViewModal({ isOpen, onClose, onSave }) {
                 id={column.id}
                 checked={selectedColumns.includes(column.id)}
                 onCheckedChange={() => handleColumnToggle(column.id)}
+                className="border-gray-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
               />
               <label
                 htmlFor={column.id}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-sm font-medium leading-none text-gray-200 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {column.label}
               </label>
@@ -76,7 +77,12 @@ export default function CustomizeViewModal({ isOpen, onClose, onSave }) {
           ))}
         </div>
         <DialogFooter>
-          <Button onClick={handleSave}>Save View</Button>
+          <Button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            Save View
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
