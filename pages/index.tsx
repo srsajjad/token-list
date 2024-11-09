@@ -49,20 +49,36 @@ export default function Home() {
     );
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Crypto Dashboard</h1>
+    <div className="container mx-auto p-4 bg-gray-900 min-h-screen text-gray-100">
+      <h1 className="text-2xl font-bold mb-4 text-white">Crypto Dashboard</h1>
       <HighlightsSection />
-      <Tabs value={currentView} onValueChange={setCurrentView}>
+      <Tabs
+        value={currentView}
+        onValueChange={setCurrentView}
+        className="border-gray-700"
+      >
         <div className="flex justify-between items-center mb-4">
-          <TabsList>
-            <TabsTrigger value="Trending">Trending</TabsTrigger>
+          <TabsList className="bg-gray-800 border border-gray-700">
+            <TabsTrigger
+              value="Trending"
+              className="data-[state=active]:bg-gray-700"
+            >
+              Trending
+            </TabsTrigger>
             {savedViews.map((view) => (
-              <TabsTrigger key={view} value={view}>
+              <TabsTrigger
+                key={view}
+                value={view}
+                className="data-[state=active]:bg-gray-700"
+              >
                 {view}
               </TabsTrigger>
             ))}
           </TabsList>
-          <Button onClick={() => setIsCustomizeModalOpen(true)}>
+          <Button
+            onClick={() => setIsCustomizeModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             Customize
           </Button>
         </div>
