@@ -62,6 +62,19 @@ type ColumnDef = {
   header: string;
 };
 
+const renderPercentageChange = (value: number) => {
+  if (!value) return "N/A";
+  const isPositive = value > 0;
+  return (
+    <div className="flex items-center gap-1">
+      <span className={isPositive ? "text-green-500" : "text-red-500"}>
+        {isPositive ? "↑" : "↓"}
+      </span>
+      <span>{Math.abs(value).toFixed(2)}%</span>
+    </div>
+  );
+};
+
 const defaultColumns = [
   columnHelper.accessor("image", {
     id: "image",
@@ -90,30 +103,21 @@ const defaultColumns = [
     header: "1h",
     enableSorting: true,
     sortingFn: "alphanumeric",
-    cell: (info) => {
-      const value = info.getValue();
-      return value ? `${value.toFixed(2)}%` : "N/A";
-    },
+    cell: (info) => renderPercentageChange(info.getValue()),
   }),
   columnHelper.accessor("price_change_percentage_24h_in_currency", {
-    id: "price_change_24h", // Add explicit id
-    header: "24h", // Change from function to string
+    id: "price_change_24h",
+    header: "24h",
     enableSorting: true,
     sortingFn: "alphanumeric",
-    cell: (info) => {
-      const value = info.getValue();
-      return value ? `${value.toFixed(2)}%` : "N/A";
-    },
+    cell: (info) => renderPercentageChange(info.getValue()),
   }),
   columnHelper.accessor("price_change_percentage_7d_in_currency", {
     id: "price_change_7d",
     header: "7d",
     enableSorting: true,
     sortingFn: "alphanumeric",
-    cell: (info) => {
-      const value = info.getValue();
-      return value ? `${value.toFixed(2)}%` : "N/A";
-    },
+    cell: (info) => renderPercentageChange(info.getValue()),
   }),
   columnHelper.accessor("total_volume", {
     id: "total_volume", // Add explicit id
