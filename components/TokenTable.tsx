@@ -56,6 +56,12 @@ ChartJS.register(
 
 const columnHelper = createColumnHelper<any>();
 
+type ColumnDef = {
+  id: string;
+  accessorKey: string;
+  header: string;
+};
+
 const defaultColumns = [
   columnHelper.accessor("image", {
     id: "image",
@@ -90,7 +96,8 @@ const defaultColumns = [
     },
   }),
   columnHelper.accessor("price_change_percentage_24h_in_currency", {
-    header: "24h",
+    id: "price_change_24h", // Add explicit id
+    header: "24h", // Change from function to string
     enableSorting: true,
     sortingFn: "alphanumeric",
     cell: (info) => {
@@ -99,6 +106,7 @@ const defaultColumns = [
     },
   }),
   columnHelper.accessor("price_change_percentage_7d_in_currency", {
+    id: "price_change_7d",
     header: "7d",
     enableSorting: true,
     sortingFn: "alphanumeric",
@@ -108,19 +116,22 @@ const defaultColumns = [
     },
   }),
   columnHelper.accessor("total_volume", {
-    header: "24h Volume",
+    id: "total_volume", // Add explicit id
+    header: "24h Volume", // Change from function to string
     enableSorting: true,
     sortingFn: "alphanumeric",
     cell: (info) => `$${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("market_cap", {
-    header: "Market Cap",
+    id: "market_cap", // Add explicit id
+    header: "Market Cap", // Change from function to string
     enableSorting: true,
     sortingFn: "alphanumeric",
     cell: (info) => `$${info.getValue().toLocaleString()}`,
   }),
   columnHelper.accessor("sparkline_in_7d.price", {
-    header: "Last 7 Days",
+    id: "sparkline", // Add explicit id
+    header: "Last 7 Days", // Change from function to string
     enableSorting: true,
     cell: (info) => (
       <div className="w-32 h-16">
@@ -199,6 +210,14 @@ function DraggableColumnHeader({ header }) {
   );
 }
 
+// Add interface for column type
+interface Column {
+  id: string;
+  header: string;
+  accessorKey?: string;
+}
+
+// Update table configuration and rendering
 export default function TokenTable({ tokens, view }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columns, setColumns] = useState(() => {
@@ -208,9 +227,9 @@ export default function TokenTable({ tokens, view }) {
     const savedView = localStorage.getItem(`view_${view}`);
     if (savedView) {
       const savedColumns = JSON.parse(savedView);
-      return savedColumns.map((columnId) =>
-        defaultColumns.find((col) => col.id === columnId)
-      );
+      return savedColumns
+        .map((columnId) => defaultColumns.find((col) => col.id === columnId))
+        .filter(Boolean); // Add this line to filter out undefined columns
     }
     return defaultColumns;
   });
@@ -228,6 +247,7 @@ export default function TokenTable({ tokens, view }) {
     getSortedRowModel: getSortedRowModel(),
     enableSorting: true,
     enableMultiSort: false, // Change to false to make sorting behavior more clear
+    getColumnId: (column) => column.id ?? column.accessorKey ?? "", // Updated column ID getter
     sortingFns: {
       alphanumeric: (rowA, rowB, columnId) => {
         const a =
@@ -280,7 +300,7 @@ export default function TokenTable({ tokens, view }) {
         <TableHeader>
           <TableRow>
             <SortableContext
-              items={table.getAllColumns().map((column) => column.id)}
+              items={columns.map((col) => col.id ?? col.accessorKey ?? "")}
               strategy={verticalListSortingStrategy}
             >
               {table

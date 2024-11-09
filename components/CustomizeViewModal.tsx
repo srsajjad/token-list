@@ -13,12 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 const availableColumns = [
   { id: "image", label: "Coin" },
   { id: "current_price", label: "Price" },
-  { id: "price_change_percentage_1h_in_currency", label: "1h" },
-  { id: "price_change_percentage_24h", label: "24h" },
-  { id: "price_change_percentage_7d_in_currency", label: "7d" },
+  { id: "price_change_1h", label: "1h" }, // Updated ID
+  { id: "price_change_24h", label: "24h" }, // Updated ID
+  { id: "price_change_7d", label: "7d" }, // Updated ID
   { id: "total_volume", label: "24h Volume" },
   { id: "market_cap", label: "Market Cap" },
-  { id: "sparkline_in_7d.price", label: "Last 7 Days" },
+  { id: "sparkline", label: "Last 7 Days" }, // Updated ID
 ];
 
 export default function CustomizeViewModal({ isOpen, onClose, onSave }) {
