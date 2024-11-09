@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
 
 const availableColumns = [
   { id: "image", label: "Coin" },
@@ -21,13 +21,23 @@ const availableColumns = [
   { id: "sparkline", label: "Last 7 Days" }, // Updated ID
 ];
 
-export default function CustomizeViewModal({ isOpen, onClose, onSave }) {
+interface CustomizeViewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (viewName: string, selectedColumns: string[]) => void;
+}
+
+export default function CustomizeViewModal({
+  isOpen,
+  onClose,
+  onSave,
+}: CustomizeViewModalProps) {
   const [selectedColumns, setSelectedColumns] = useState(
     availableColumns.map((col) => col.id)
   );
   const [viewName, setViewName] = useState("");
 
-  const handleColumnToggle = (columnId) => {
+  const handleColumnToggle = (columnId: string) => {
     setSelectedColumns((prev) =>
       prev.includes(columnId)
         ? prev.filter((id) => id !== columnId)

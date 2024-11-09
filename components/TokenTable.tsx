@@ -1,18 +1,16 @@
-import { useMemo, useState } from "react";
 import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-  SortingState,
-  sortingFns,
-} from "@tanstack/react-table";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DndContext,
-  closestCenter,
   KeyboardSensor,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -24,25 +22,26 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Line } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
+  SortingState,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -55,12 +54,6 @@ ChartJS.register(
 );
 
 const columnHelper = createColumnHelper<any>();
-
-type ColumnDef = {
-  id: string;
-  accessorKey: string;
-  header: string;
-};
 
 const renderPercentageChange = (value: number) => {
   if (!value) return "N/A";
@@ -173,7 +166,7 @@ const defaultColumns = [
   }),
 ];
 
-function DraggableColumnHeader({ header }) {
+function DraggableColumnHeader({ header }: { header: any }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: header.id,
@@ -214,15 +207,25 @@ function DraggableColumnHeader({ header }) {
   );
 }
 
-// Add interface for column type
-interface Column {
-  id: string;
-  header: string;
-  accessorKey?: string;
+interface Token {
+  image: string;
+  current_price: number;
+  price_change_percentage_1h_in_currency: number;
+  price_change_percentage_24h_in_currency: number;
+  price_change_percentage_7d_in_currency: number;
+  total_volume: number;
+  market_cap: number;
+  sparkline_in_7d: { price: number[] };
+  name: string;
 }
 
-// Update table configuration and rendering
-export default function TokenTable({ tokens, view }) {
+export default function TokenTable({
+  tokens,
+  view,
+}: {
+  tokens: Token[];
+  view: string;
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columns, setColumns] = useState(() => {
     if (view === "Trending") {
@@ -232,7 +235,9 @@ export default function TokenTable({ tokens, view }) {
     if (savedView) {
       const savedColumns = JSON.parse(savedView);
       return savedColumns
-        .map((columnId) => defaultColumns.find((col) => col.id === columnId))
+        .map((columnId: string | undefined) =>
+          defaultColumns.find((col) => col.id === columnId)
+        )
         .filter(Boolean); // Add this line to filter out undefined columns
     }
     return defaultColumns;
@@ -250,8 +255,7 @@ export default function TokenTable({ tokens, view }) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableSorting: true,
-    enableMultiSort: false, // Change to false to make sorting behavior more clear
-    getColumnId: (column) => column.id ?? column.accessorKey ?? "", // Updated column ID getter
+    enableMultiSort: false,
     sortingFns: {
       alphanumeric: (rowA, rowB, columnId) => {
         const a =
@@ -270,15 +274,14 @@ export default function TokenTable({ tokens, view }) {
     })
   );
 
-  function handleDragEnd(event) {
+  function handleDragEnd(event: { active: any; over: any }) {
     const { active, over } = event;
 
-    // Add null check for over
     if (!over || active.id === over.id) {
       return;
     }
 
-    setColumns((prevColumns) => {
+    setColumns((prevColumns: any[]) => {
       const oldIndex = prevColumns.findIndex(
         (col) => col.id === active.id || col.accessorKey === active.id
       );
@@ -304,7 +307,10 @@ export default function TokenTable({ tokens, view }) {
         <TableHeader>
           <TableRow>
             <SortableContext
-              items={columns.map((col) => col.id ?? col.accessorKey ?? "")}
+              items={columns.map(
+                (col: { id: any; accessorKey: any }) =>
+                  col.id ?? col.accessorKey ?? ""
+              )}
               strategy={verticalListSortingStrategy}
             >
               {table

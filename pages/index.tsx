@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { atom, useAtom } from "jotai";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import CustomizeViewModal from "@/components/CustomizeViewModal";
 import HighlightsSection from "@/components/HighlightSection";
 import TokenTable from "@/components/TokenTable";
-import CustomizeViewModal from "@/components/CustomizeViewModal";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery } from "@tanstack/react-query";
+import { atom, useAtom } from "jotai";
+import { useEffect, useState } from "react";
 
 const currentViewAtom = atom("Trending");
 const savedViewsAtom = atom<string[]>([]);
@@ -34,7 +34,7 @@ export default function Home() {
     if (storedViews) {
       setSavedViews(JSON.parse(storedViews));
     }
-  }, []);
+  }, [setSavedViews]);
 
   useEffect(() => {
     localStorage.setItem("savedViews", JSON.stringify(savedViews));

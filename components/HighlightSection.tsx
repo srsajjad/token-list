@@ -1,5 +1,5 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Line } from "react-chartjs-2";
 
 const ChartOptions = {
@@ -65,7 +65,9 @@ export default function HighlightsSection() {
               <div className="text-xs text-muted-foreground">
                 <span
                   className={
-                    marketCapChange > 0 ? "text-green-500" : "text-red-500"
+                    marketCapChange > 0
+                      ? "text-green-500 mr-1"
+                      : "text-red-500 mr-1"
                   }
                 >
                   {marketCapChange > 0 ? "↑" : "↓"}
