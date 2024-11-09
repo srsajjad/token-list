@@ -73,7 +73,7 @@ export default function HighlightsSection() {
                 <span>{Math.abs(marketCapChange).toFixed(2)}%</span>
               </div>
             </div>
-            <div className="w-28 h-12">
+            <div className="w-28 h-12 self-center">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
@@ -106,7 +106,7 @@ export default function HighlightsSection() {
                 ${data.total_volume.usd.toLocaleString()}
               </p>
             </div>
-            <div className="w-28 h-12">
+            <div className="w-28 h-12 self-center">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
