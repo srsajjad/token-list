@@ -42,8 +42,10 @@ export default function HighlightsSection() {
       <Card className="p-4">
         <CardContent className="p-0">
           <div className="space-y-1">
-            <h3 className="text-base font-medium">Cryptocurrencies</h3>
-            <p className="text-sm font-semibold">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+              Cryptocurrencies
+            </h3>
+            <p className="text-base font-bold">
               {data.active_cryptocurrencies}
             </p>
           </div>
@@ -54,8 +56,10 @@ export default function HighlightsSection() {
         <CardContent className="p-0">
           <div className="flex justify-between items-center gap-4">
             <div className="space-y-1.5">
-              <h3 className="text-base font-medium">Market Cap</h3>
-              <p className="text-sm font-semibold">
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Market Cap
+              </h3>
+              <p className="text-base font-bold">
                 ${data.total_market_cap.usd.toLocaleString()}
               </p>
               <div className="text-xs text-muted-foreground">
@@ -64,7 +68,7 @@ export default function HighlightsSection() {
                     marketCapChange > 0 ? "text-green-500" : "text-red-500"
                   }
                 >
-                  {marketCapChange > 0 ? "���" : "↓"}
+                  {marketCapChange > 0 ? "↑" : "↓"}
                 </span>
                 <span>{Math.abs(marketCapChange).toFixed(2)}%</span>
               </div>
@@ -95,8 +99,10 @@ export default function HighlightsSection() {
         <CardContent className="p-0">
           <div className="flex justify-between items-center gap-4">
             <div className="space-y-1.5">
-              <h3 className="text-base font-medium">24h Volume</h3>
-              <p className="text-sm font-semibold">
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                24h Volume
+              </h3>
+              <p className="text-base font-bold">
                 ${data.total_volume.usd.toLocaleString()}
               </p>
             </div>
