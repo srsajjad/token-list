@@ -51,7 +51,9 @@ export default function Home() {
   return (
     <div className="container mx-auto p-4 bg-gray-900/50 min-h-screen text-gray-100">
       <h1 className="text-2xl font-bold mb-4 text-white">Crypto Dashboard</h1>
+
       <HighlightsSection />
+
       <Tabs
         value={currentView}
         onValueChange={setCurrentView}
@@ -82,15 +84,18 @@ export default function Home() {
             Customize
           </Button>
         </div>
+
         <TabsContent value="Trending">
           <TokenTable tokens={tokens} view="Trending" />
         </TabsContent>
+
         {savedViews.map((view) => (
           <TabsContent key={view} value={view}>
             <TokenTable tokens={tokens} view={view} />
           </TabsContent>
         ))}
       </Tabs>
+
       <CustomizeViewModal
         isOpen={isCustomizeModalOpen}
         onClose={() => setIsCustomizeModalOpen(false)}
