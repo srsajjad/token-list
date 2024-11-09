@@ -58,10 +58,10 @@ export default function Home() {
         className="border-gray-700"
       >
         <div className="flex justify-between items-center mb-4">
-          <TabsList className="bg-gray-800 border border-gray-700">
+          <TabsList className="bg-gray-900 border border-gray-800">
             <TabsTrigger
               value="Trending"
-              className="data-[state=active]:bg-gray-700"
+              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
             >
               Trending
             </TabsTrigger>
@@ -69,7 +69,7 @@ export default function Home() {
               <TabsTrigger
                 key={view}
                 value={view}
-                className="data-[state=active]:bg-gray-700"
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
               >
                 {view}
               </TabsTrigger>
