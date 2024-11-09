@@ -40,42 +40,36 @@ export default function HighlightsSection() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
       <Card className="p-4">
-        <CardHeader className="p-0 pb-2">
-          <CardTitle className="text-sm md:text-base">
-            Cryptocurrencies
-          </CardTitle>
-        </CardHeader>
         <CardContent className="p-0">
-          <p className="text-sm font-semibold">
-            {data.active_cryptocurrencies}
-          </p>
+          <div className="space-y-1">
+            <h3 className="text-base font-medium">Cryptocurrencies</h3>
+            <p className="text-sm font-semibold">
+              {data.active_cryptocurrencies}
+            </p>
+          </div>
         </CardContent>
       </Card>
 
       <Card className="p-4">
-        <CardHeader className="p-0 pb-2">
-          <CardTitle className="text-sm md:text-base">Market Cap</CardTitle>
-        </CardHeader>
         <CardContent className="p-0">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
+          <div className="flex justify-between items-center gap-4">
+            <div className="space-y-1.5">
+              <h3 className="text-base font-medium">Market Cap</h3>
               <p className="text-sm font-semibold">
                 ${data.total_market_cap.usd.toLocaleString()}
               </p>
-              <div className="flex items-center gap-1">
+              <div className="text-xs text-muted-foreground">
                 <span
                   className={
                     marketCapChange > 0 ? "text-green-500" : "text-red-500"
                   }
                 >
-                  {marketCapChange > 0 ? "↑" : "↓"}
+                  {marketCapChange > 0 ? "���" : "↓"}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {Math.abs(marketCapChange).toFixed(2)}%
-                </span>
+                <span>{Math.abs(marketCapChange).toFixed(2)}%</span>
               </div>
             </div>
-            <div className="h-12">
+            <div className="w-28 h-12 shrink-0">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
@@ -98,17 +92,15 @@ export default function HighlightsSection() {
       </Card>
 
       <Card className="p-4">
-        <CardHeader className="p-0 pb-2">
-          <CardTitle className="text-sm md:text-base">24h Volume</CardTitle>
-        </CardHeader>
         <CardContent className="p-0">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+          <div className="flex justify-between items-center gap-4">
+            <div className="space-y-1.5">
+              <h3 className="text-base font-medium">24h Volume</h3>
               <p className="text-sm font-semibold">
                 ${data.total_volume.usd.toLocaleString()}
               </p>
             </div>
-            <div className="h-12">
+            <div className="w-28 h-12 shrink-0">
               <Line
                 data={{
                   labels: mockChartData.map(([time]) => time),
