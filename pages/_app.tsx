@@ -1,12 +1,13 @@
-import { AppProps } from "next/app";
+import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "jotai";
-import "@/styles/globals.css";
+import { AppProps } from "next/app";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      staleTime: 2 * 60 * 1000, // 2 minutes
     },
   },
 });

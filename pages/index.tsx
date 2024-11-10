@@ -3,7 +3,7 @@ import HighlightsSection from "@/components/HighlightSection";
 import TokenTable from "@/components/TokenTable";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
+import { useLoadTokens } from "@/hooks/useLoadTokens";
 import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
@@ -15,19 +15,7 @@ export default function Home() {
   const [savedViews, setSavedViews] = useAtom(savedViewsAtom);
   const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
 
-  const {
-    data: tokens,
-    isLoading,
-    error,
-  } = useQuery(["tokens"], async () => {
-    const response = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h,24h,7d"
-    );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return response.json();
-  });
+  const { isLoading, error } = useLoadTokens();
 
   useEffect(() => {
     const storedViews = localStorage.getItem("savedViews");
@@ -62,6 +50,8 @@ export default function Home() {
       </div>
     );
 
+  console.log("running");
+
   return (
     <div className="container mx-auto p-4 bg-gray-900/50 min-h-screen text-gray-100">
       <h1 className="text-2xl font-bold mb-4 text-white">Crypto Dashboard</h1>
@@ -81,6 +71,7 @@ export default function Home() {
             >
               Trending
             </TabsTrigger>
+
             {savedViews.map((view) => (
               <div key={view} className="relative inline-flex items-center">
                 <TabsTrigger
@@ -124,12 +115,12 @@ export default function Home() {
         </div>
 
         <TabsContent value="Trending">
-          <TokenTable tokens={tokens} view="Trending" />
+          <TokenTable view="Trending" />
         </TabsContent>
 
         {savedViews.map((view) => (
           <TabsContent key={view} value={view}>
-            <TokenTable tokens={tokens} view={view} />
+            <TokenTable view={view} />
           </TabsContent>
         ))}
       </Tabs>
