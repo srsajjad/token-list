@@ -85,7 +85,7 @@ export default function Home() {
               <div key={view} className="relative inline-flex items-center">
                 <TabsTrigger
                   value={view}
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 group"
                 >
                   {view}
                   <button
@@ -93,7 +93,7 @@ export default function Home() {
                       e.stopPropagation();
                       handleDeleteView(view);
                     }}
-                    className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none"
+                    className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none group-data-[state=active]:text-gray-300 group-data-[state=active]:hover:text-gray-100"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
