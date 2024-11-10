@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLoadTokens } from "@/hooks/useLoadTokens";
 import { atom, useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 const currentViewAtom = atom("Trending");
 const savedViewsAtom = atom<string[]>([]);
@@ -14,6 +14,8 @@ export default function Home() {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [savedViews, setSavedViews] = useAtom(savedViewsAtom);
   const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("Trending");
+  const [isPending, startContentTransition] = useTransition();
 
   const { isLoading, error } = useLoadTokens();
 
@@ -50,8 +52,6 @@ export default function Home() {
       </div>
     );
 
-  console.log("running");
-
   return (
     <div className="container mx-auto p-4 bg-gray-900/50 min-h-screen text-gray-100">
       <h1 className="text-2xl font-bold mb-4 text-white">Crypto Dashboard</h1>
@@ -60,7 +60,13 @@ export default function Home() {
 
       <Tabs
         value={currentView}
-        onValueChange={setCurrentView}
+        onValueChange={(value) => {
+          setSelectedTab(value);
+
+          startContentTransition(() => {
+            setCurrentView(value);
+          });
+        }}
         className="border-gray-700"
       >
         <div className="flex justify-between items-center mb-4">
@@ -70,6 +76,9 @@ export default function Home() {
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
             >
               Trending
+              {isPending && selectedTab === "Trending" && (
+                <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              )}
             </TabsTrigger>
 
             {savedViews.map((view) => (
@@ -79,28 +88,32 @@ export default function Home() {
                   className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 group"
                 >
                   {view}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteView(view);
-                    }}
-                    className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none group-data-[state=active]:text-gray-300 group-data-[state=active]:hover:text-gray-100"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                  {isPending && selectedTab === view ? (
+                    <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteView(view);
+                      }}
+                      className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none group-data-[state=active]:text-gray-300 group-data-[state=active]:hover:text-gray-100"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
                 </TabsTrigger>
               </div>
             ))}
