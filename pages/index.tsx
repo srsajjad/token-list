@@ -40,6 +40,14 @@ export default function Home() {
     localStorage.setItem("savedViews", JSON.stringify(savedViews));
   }, [savedViews]);
 
+  const handleDeleteView = (viewToDelete: string) => {
+    setSavedViews(savedViews.filter((view) => view !== viewToDelete));
+    localStorage.removeItem(`view_${viewToDelete}`);
+    if (currentView === viewToDelete) {
+      setCurrentView("Trending");
+    }
+  };
+
   if (isLoading)
     return (
       <div className="container mx-auto p-4 flex flex-col gap-2 justify-center items-center min-h-screen">
@@ -73,15 +81,37 @@ export default function Home() {
             >
               Trending
             </TabsTrigger>
-
             {savedViews.map((view) => (
-              <TabsTrigger
-                key={view}
-                value={view}
-                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
-              >
-                {view}
-              </TabsTrigger>
+              <div key={view} className="relative inline-flex items-center">
+                <TabsTrigger
+                  value={view}
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
+                >
+                  {view}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteView(view);
+                    }}
+                    className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </TabsTrigger>
+              </div>
             ))}
           </TabsList>
 
