@@ -2,7 +2,6 @@ import CustomizeViewModal from "@/components/CustomizeViewModal";
 import HighlightsSection from "@/components/HighlightSection";
 import TokenTable from "@/components/TokenTable";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
@@ -15,7 +14,6 @@ export default function Home() {
   const [currentView, setCurrentView] = useAtom(currentViewAtom);
   const [savedViews, setSavedViews] = useAtom(savedViewsAtom);
   const [isCustomizeModalOpen, setIsCustomizeModalOpen] = useState(false);
-  const [progress, setProgress] = useState(13);
 
   const {
     data: tokens,
@@ -42,32 +40,10 @@ export default function Home() {
     localStorage.setItem("savedViews", JSON.stringify(savedViews));
   }, [savedViews]);
 
-  useEffect(() => {
-    if (isLoading) {
-      const timer = setInterval(() => {
-        setProgress((prev) => {
-          // Fast at start, slower as it progresses
-          const remaining = 90 - prev;
-          const increment = Math.max(0.1, remaining * 0.1);
-          const next = prev + increment;
-          return next >= 90 ? 90 : next;
-        });
-      }, 50);
-      return () => clearInterval(timer);
-    } else {
-      setProgress(13);
-    }
-  }, [isLoading]);
-
   if (isLoading)
     return (
       <div className="container mx-auto p-4 flex flex-col gap-2 justify-center items-center min-h-screen">
-        <div className="w-[60%] max-w-md">
-          <Progress
-            value={progress}
-            className="h-2 bg-gray-700 [&>div]:bg-white [&>div]:transition-all [&>div]:duration-300"
-          />
-        </div>
+        <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
 
@@ -97,6 +73,7 @@ export default function Home() {
             >
               Trending
             </TabsTrigger>
+
             {savedViews.map((view) => (
               <TabsTrigger
                 key={view}
@@ -107,6 +84,7 @@ export default function Home() {
               </TabsTrigger>
             ))}
           </TabsList>
+
           <Button
             onClick={() => setIsCustomizeModalOpen(true)}
             className="bg-blue-600 hover:bg-blue-700"
