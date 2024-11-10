@@ -137,9 +137,14 @@ export default function Home() {
       <CustomizeViewModal
         isOpen={isCustomizeModalOpen}
         onClose={() => setIsCustomizeModalOpen(false)}
+        existingViews={savedViews}
         onSave={(viewName, columns) => {
-          setSavedViews([...savedViews, viewName]);
-          localStorage.setItem(`view_${viewName}`, JSON.stringify(columns));
+          const trimmedName = viewName.trim();
+          if (savedViews.includes(trimmedName)) {
+            return; // Extra safety check
+          }
+          setSavedViews([...savedViews, trimmedName]);
+          localStorage.setItem(`view_${trimmedName}`, JSON.stringify(columns));
           setIsCustomizeModalOpen(false);
         }}
       />

@@ -25,17 +25,20 @@ interface CustomizeViewModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (viewName: string, selectedColumns: string[]) => void;
+  existingViews: string[]; // Add this prop
 }
 
 export default function CustomizeViewModal({
   isOpen,
   onClose,
   onSave,
+  existingViews,
 }: CustomizeViewModalProps) {
   const [selectedColumns, setSelectedColumns] = useState(
     availableColumns.map((col) => col.id)
   );
   const [viewName, setViewName] = useState("");
+  // const [isSaving, setIsSaving] = useState(false);
 
   const handleColumnToggle = (columnId: string) => {
     setSelectedColumns((prev) =>
@@ -50,7 +53,19 @@ export default function CustomizeViewModal({
       alert("Please enter a name for your custom view");
       return;
     }
-    onSave(viewName, selectedColumns);
+    if (existingViews.includes(viewName.trim())) {
+      alert("A view with this name already exists");
+      return;
+    }
+    // if (isSaving) {
+    //   return;
+    // }
+
+    // setIsSaving(true);
+    onClose();
+    onSave(viewName.trim(), selectedColumns);
+    // setIsSaving(false);
+    // onClose(); // for async calls
   };
 
   return (
@@ -89,8 +104,10 @@ export default function CustomizeViewModal({
         <DialogFooter>
           <Button
             onClick={handleSave}
+            // disabled={isSaving || viewName.trim() === ""}
             className="bg-blue-600 hover:bg-blue-700"
           >
+            {/* {isSaving ? "Saving..." : "Save View"} */}
             Save View
           </Button>
         </DialogFooter>
