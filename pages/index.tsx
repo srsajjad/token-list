@@ -69,59 +69,61 @@ export default function Home() {
         }}
         className="border-gray-700"
       >
-        <div className="flex justify-between items-center mb-4">
-          <TabsList className="bg-gray-900 border border-gray-800">
-            <TabsTrigger
-              value="Trending"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
-            >
-              Trending
-              {isPending && selectedTab === "Trending" && (
-                <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              )}
-            </TabsTrigger>
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-4 mb-4">
+          <div className="w-full sm:w-auto">
+            <TabsList className="bg-gray-900 border border-gray-800 w-full flex flex-wrap items-center h-auto gap-2 p-2 justify-start">
+              <TabsTrigger
+                value="Trending"
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 border border-gray-700 data-[state=inactive]:bg-gray-800/50"
+              >
+                Trending
+                {isPending && selectedTab === "Trending" && (
+                  <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                )}
+              </TabsTrigger>
 
-            {savedViews.map((view) => (
-              <div key={view} className="relative inline-flex items-center">
-                <TabsTrigger
-                  value={view}
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 group"
-                >
-                  {view}
-                  {isPending && selectedTab === view ? (
-                    <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteView(view);
-                      }}
-                      className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none group-data-[state=active]:text-gray-300 group-data-[state=active]:hover:text-gray-100"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+              {savedViews.map((view) => (
+                <div key={view}>
+                  <TabsTrigger
+                    value={view}
+                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 group border border-gray-700 data-[state=inactive]:bg-gray-800/50"
+                  >
+                    {view}
+                    {isPending && selectedTab === view ? (
+                      <div className="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteView(view);
+                        }}
+                        className="ml-2 text-gray-500 hover:text-gray-300 focus:outline-none group-data-[state=active]:text-gray-300 group-data-[state=active]:hover:text-gray-100"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </TabsTrigger>
-              </div>
-            ))}
-          </TabsList>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </TabsTrigger>
+                </div>
+              ))}
+            </TabsList>
+          </div>
 
           <Button
             onClick={() => setIsCustomizeModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto whitespace-nowrap"
           >
             Customize
           </Button>
